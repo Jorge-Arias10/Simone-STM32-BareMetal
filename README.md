@@ -14,7 +14,7 @@ This project implements the classic memory game "Simone" (similar to Simon Says)
 
 Puede añadir una imagen de portada **de su propiedad** aquí. Por ejemplo, del montaje final, o una captura de osciloscopio, etc.
 
-[![Demostración Proyecto Simone](docs/assets/imgs/otra_FOTO)](https://youtu.be/NUESTRO_ENLACE "Demostración final del proyecto Simone en la placa STM32")
+[![Demostración Proyecto Simone](docs/assets/imgs/otra_FOTO)](https://youtu.be/tG3hYmJkZ0k "Demostración final del proyecto Simone en la placa STM32")
 
 
 ## Version 1: FSM Button
@@ -61,7 +61,7 @@ stateDiagram-v2
     %% =====================================================================
     state IDLE {
         entry: Activar FSM_LIGHT_STATUS (true); \nprintf("[SIMONE] Esperando botón...");
-        do: port_system_sleep(); // ¡¡CRÍTICO!! Apaga SysTick -> __WFI() -> Enciende SysTick al despertar
+        do: port_system_sleep(); // ¡¡CRÍTICO!! Apaga SysTick => __WFI() => Enciende SysTick al despertar
     }
     state SLEEP_WHILE_IDLE {
         do: // Estado intermedio para el flujograma
@@ -84,7 +84,7 @@ stateDiagram-v2
     }
     state SLEEP_WHILE_PLAYBACK {
         entry: printf("[SIMONE] Dormir entre parpadeos...");
-        do: port_system_sleep(); // ¡¡CRÍTICO!! Suspend SysTick -> __WFI() -> Resume SysTick al despertar
+        do: port_system_sleep(); // ¡¡CRÍTICO!! Suspend SysTick => __WFI() => Resume SysTick al despertar
     }
 
     ADD_COLOR --> PLAYBACK : check_color_added / do_playback \n(Recuperar color/intensidad, encender LED, port_simone_set_timer_timeout(300ms))
@@ -110,7 +110,7 @@ stateDiagram-v2
     WAIT_KEY --> IDLE : check_winner / do_winner \n(port_simone_stop_timer, printf("YOU WIN!!"))
     WAIT_KEY --> IDLE : check_player_key_timeout / do_game_over_timeout \n(port_simone_stop_timer, fsm_keyboard_stop_scan, printf("GAME OVER by Timeout!"))
     
-    WAIT_KEY --> ADD_COLOR : check_player_round_end / do_add_color \n(player_idx=0, playback_idx=0, playback_over=false. Si level<HARD y array full -> level++, seq_idx=0, printf("LEVEL UP!"))
+    WAIT_KEY --> ADD_COLOR : check_player_round_end / do_add_color \n(player_idx=0, playback_idx=0, playback_over=false. Si level<HARD y array full => level++, seq_idx=0, printf("LEVEL UP!"))
     
     WAIT_KEY --> VERIFY_INPUT : check_any_key_pressed / do_capture_input \n(player_key=fsm_keyboard_get_key_value, fsm_keyboard_reset_key_value, encender LED, port_simone_set_timer_timeout(300ms))
     
